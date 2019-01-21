@@ -126,6 +126,7 @@ def predict_mortality_from_notes():
     
     print(train_data.shape)
     
+    stop = set(stopwords.words('english'))
     for i in range(0, train_data.shape[0]):
         text = train_data.iloc[i]['chartext']
         try:
@@ -133,7 +134,6 @@ def predict_mortality_from_notes():
             tokens = tokenizer.tokenize(text)
         except:
             tokens = ['']
-        stop = set(stopwords.words('english'))
         clean_tokens = [k for k in tokens if k not in stop]
         #print(clean_tokens)
         train_data.iloc[i,train_data.columns.get_loc('chartext')] = (' ').join(clean_tokens)
@@ -151,6 +151,7 @@ def predict_mortality_from_notes():
     W = classifier.coef_
     influence_weights = W.argsort(axis=-1)
 
+    stop = set(stopwords.words('english'))
     for i in range(0, test_data.shape[0]):
         text = test_data.iloc[i]['chartext']
         try:
@@ -158,7 +159,6 @@ def predict_mortality_from_notes():
             tokens = tokenizer.tokenize(text)
         except:
             tokens = ['']
-        stop = set(stopwords.words('english'))
         clean_tokens = [k for k in tokens if k not in stop]
         test_data.iloc[i,test_data.columns.get_loc('chartext')] = (' ').join(clean_tokens)
 
