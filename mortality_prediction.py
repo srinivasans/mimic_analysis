@@ -137,7 +137,6 @@ def predict_mortality_from_notes():
         clean_tokens = [k for k in tokens if k not in stop]
         #print(clean_tokens)
         train_data.iloc[i,train_data.columns.get_loc('chartext')] = (' ').join(clean_tokens)
-        print(i)
 
     print(train_data.shape)
     vectorizer = TfidfVectorizer()
@@ -147,7 +146,7 @@ def predict_mortality_from_notes():
     print(train_data.shape)
     print(train_X.shape)
 
-    classifier = LogisticRegression(penalty='l2', C=1.0, random_state=0, solver='lbfgs', multi_class='ovr')
+    classifier = LogisticRegression(penalty='l1', C=1.0, random_state=0, solver='lbfgs', multi_class='ovr')
     classifier.fit(train_X, train_Y)
     W = classifier.coef_
     influence_weights = W.argsort(axis=-1)
@@ -174,5 +173,5 @@ def predict_mortality_from_notes():
     
 
 if __name__ == '__main__':
-    #predict_mortality()
-    predict_mortality_from_notes()
+    predict_mortality()
+    #predict_mortality_from_notes()
