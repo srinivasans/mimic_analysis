@@ -123,12 +123,13 @@ def predict_mortality_from_notes():
 
     train_data = data.loc[data['train'] == 1]
     test_data = data.loc[data['train'] == 0]
-    
+    train_data.reset_index(inplace = True, drop=True)
+    test_data.reset_index(inplace = True, drop=True)
     print(train_data.shape)
-    
+
     stop = set(stopwords.words('english'))
     for i in range(0, train_data.shape[0]):
-        text = train_data.iloc[i]['chartext']
+        text = train_data.at[i,'chartext']
         try:
             tokenizer = RegexpTokenizer(r'\w+')
             tokens = tokenizer.tokenize(text)
@@ -136,7 +137,7 @@ def predict_mortality_from_notes():
             tokens = ['']
         clean_tokens = [k for k in tokens if k not in stop]
         #print(clean_tokens)
-        train_data.iloc[i,train_data.columns.get_loc('chartext')] = (' ').join(clean_tokens)
+        train_data.at[i,'chartext'] = (' ').join(clean_tokens)
 
     print(train_data.shape)
     vectorizer = TfidfVectorizer()
@@ -146,32 +147,42 @@ def predict_mortality_from_notes():
     print(train_data.shape)
     print(train_X.shape)
 
-    classifier = LogisticRegression(penalty='l1', C=1.0, random_state=0, solver='lbfgs', multi_class='ovr')
+    classifier = LogisticRegression(penalty='l1', C=1.0, random_state=0, multi_class='ovr')
     classifier.fit(train_X, train_Y)
     W = classifier.coef_
     influence_weights = W.argsort(axis=-1)
 
+    min_influence = influence_weights[0][0:5]
+    max_influence = influence_weights[0][-5:][::-1]
+
+    print(np.array(vectorizer.get_feature_names())[max_influence])
+    print(np.array(vectorizer.get_feature_names())[min_influence])
+    
     stop = set(stopwords.words('english'))
     for i in range(0, test_data.shape[0]):
-        text = test_data.iloc[i]['chartext']
+        text = test_data.at[i,'chartext']
         try:
             tokenizer = RegexpTokenizer(r'\w+')
             tokens = tokenizer.tokenize(text)
         except:
             tokens = ['']
         clean_tokens = [k for k in tokens if k not in stop]
-        test_data.iloc[i,test_data.columns.get_loc('chartext')] = (' ').join(clean_tokens)
+        test_data.at[i,'chartext'] = (' ').join(clean_tokens)
 
     test_X = vectorizer.transform(test_data.loc[:,'chartext'].values.astype('U'))
     test_Y = test_data.loc[:,'mort_icu']
 
     pred_Y = classifier.predict_proba(test_X)[:,1]
     print(pred_Y.shape)
+
+    fpr, tpr, _ = roc_curve(test_Y, pred_Y, pos_label=1)
+    plt.plot(fpr, tpr)
+    plt.show()
     auc = roc_auc_score(test_Y, pred_Y)
     
     print(auc)
     
 
 if __name__ == '__main__':
-    predict_mortality()
-    #predict_mortality_from_notes()
+    #predict_mortality()
+    predict_mortality_from_notes()
