@@ -113,7 +113,6 @@ def predict_mortality():
     plt.show()
 
     auc = roc_auc_score(test_Y, pred_Y)
-
     print(auc)
 
 def predict_mortality_from_notes():
