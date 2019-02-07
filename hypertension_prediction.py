@@ -17,6 +17,8 @@ mimicdir = os.path.expanduser("~/Coursework/ML4Health/Assignment")
 # Dictionary to store the feature mean, std, min and max for test time normalization
 feature_max = {}
 feature_min = {}
+feature_mean = {}
+feature_std = {}
 
 '''
 Min-Max Normalization of features
@@ -31,6 +33,22 @@ def min_max_normalize(feature, feature_name, test=False):
         max_val = feature_max[feature_name]
         min_val = feature_min[feature_name]
     feature = (feature - min_val) / (max_val - min_val)
+    return feature
+
+'''
+Mean-Standard Normalization of features ()
+'''
+def mean_std_normalize(feature, feature_name, test=False):
+    if not test:
+        mean = feature.mean()
+        std = feature.std()
+        feature_mean[feature_name] = mean
+        feature_std[feature_name] = std
+    else:
+        mean = feature_mean[feature_name]
+        std = feature_std[feature_name]
+
+    feature = (feature - mean) / (std)
     return feature
 
 '''
@@ -257,12 +275,12 @@ def predict_hypertension_lstm():
         print("Evaluating LSTM model with %s feature data"%feature_map[feature])
         train = train_data[train_data['itemid']==feature]
         # Train the model for each feature
-        train['valuenum'] = min_max_normalize(train['valuenum'], feature, test=False)
+        train['valuenum'] = mean_std_normalize(train['valuenum'], feature, test=False)
         model = fit_lstm_model(train, feature_map[feature])
         
         # Evaluate the model for each feature 
         test = test_data[test_data['itemid']==feature]
-        test['valuenum'] = min_max_normalize(test['valuenum'], feature, test=True)
+        test['valuenum'] = mean_std_normalize(test['valuenum'], feature, test=True)
         test_lstm_model(test,model,feature_map[feature])
     
 if __name__ == '__main__':
