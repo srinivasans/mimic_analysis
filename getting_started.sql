@@ -1,5 +1,5 @@
 /*
-SQL commands for Part 1 - Getting Started - MIMIC Analysis assignment
+SQL commands for Part 1 - Getting Started - MIMIC Analysis assignment (Part 1)
 Patient ID analyzed = 40080 
 Author : srinivasan@cs.toronto.edu
 */

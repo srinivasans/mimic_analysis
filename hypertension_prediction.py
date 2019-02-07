@@ -1,5 +1,5 @@
 '''
-Script for predicting Hypertension from MIMIC data 
+Script for predicting Hypertension from MIMIC data (Part 3)
 Author : srinivasan@cs.toronto.edu
 '''
 import os
@@ -75,6 +75,7 @@ def test_model(model, test_data, columns, name):
     plt.title('Hypertension Prediction - ROC curve - %s'%name)
     plt.savefig('part3a_roc_%s.png'%name)
     
+    pred_Y_lab = (pred_Y>0.4).astype(np.uint8)
     auc = roc_auc_score(test_Y, pred_Y)
     f1 = f1_score(test_Y, pred_Y_lab)
     print("AUC Score : %f"%auc)
@@ -264,7 +265,6 @@ def predict_hypertension_lstm():
         test['valuenum'] = min_max_normalize(test['valuenum'], feature, test=True)
         test_lstm_model(test,model,feature_map[feature])
     
-
 if __name__ == '__main__':
-    #predict_hypertension()
+    predict_hypertension()
     predict_hypertension_lstm()

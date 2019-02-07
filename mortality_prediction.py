@@ -1,5 +1,5 @@
 '''
-Script for Mortality prediction from ICU data 
+Script for Mortality prediction from ICU data (Part 2)
 Author : srinivasan@cs.toronto.edu
 '''
 

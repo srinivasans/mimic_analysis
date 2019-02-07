@@ -1,5 +1,5 @@
 '''
-Script for topic modeling from adult ICU clinical notes using LDA
+Script for topic modeling from adult ICU clinical notes using LDA (Part 4)
 Author : srinivasan@cs.toronto.edu
 '''
 
@@ -87,7 +87,7 @@ def model_topics_from_notes():
 
     related_topics = {}
     # Look for related words in the topic of the search keywords using the best coherence model
-    search_keywords = {'respiratory','vomiting', 'urine', 'pulse'}
+    search_keywords = ['respiratory','vomiting', 'urine', 'pulse']
     for keyword in search_keywords:
         topic_scores = lda_model.get_term_topics(id2word.doc2bow([keyword])[0][0], minimum_probability=0)
         max_score = 0
